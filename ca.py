@@ -114,7 +114,7 @@ with open("ca/ca.csv", "w", newline="") as csvfile:
   writer = csv.writer(csvfile)
   writer.writerows(images)
 
-#data we want, this part is hardcoded for now.. need to monitoring
+#data we want, this part is hardcoded for now.. need to change later on
 output = [
   ["NURSING HOME"],
   ["Resident Positives", int(texts[3])],
@@ -130,7 +130,7 @@ print(output)
 #/vizql/v_201942006261424/javascripts/built-dojo/dojo/resources/blank.gif 
 
 
-#writing img urlto google sheet
+#writing img url to google sheet
 
 gc = gspread.service_account()
 
