@@ -12,6 +12,7 @@ import time
 import os
 import pytesseract #change text to image
 from PIL import Image
+from datetime import date
 
 #Install Driver
 driver = webdriver.Chrome(ChromeDriverManager().install())
@@ -115,14 +116,22 @@ with open("ca/ca.csv", "w", newline="") as csvfile:
   writer.writerows(images)
 
 #data we want, this part is hardcoded for now.. need to change later on
+
 output = [
-  ["NURSING HOME"],
+  ["NURSING HOME " + str(date.today())],
   ["Resident Positives", int(texts[3])],
   ["Resident Deaths Nursing Homes", int(texts[5])],
   ["Staff Positives Nursing Home", int(texts[11])],
   ["Staff Deaths Nursing Homes", int(texts[13])], 
   ["Skilled Nursing Facilities", int(texts[0])]
 ]
+"""
+#print it out horizontally
+output = [
+  ["NURSING HOME " + str(date.today()), "Resident Positives", "Resient Deaths Nursing Homes", "Staff Positives Nursing Home", "Staff Deaths Nursing Homes", "Skilled Nursing Facilities"],
+  ["", int(texts[3]), int(texts[5]), int(texts[11]), int(texts[13]), int(texts[0])]
+]
+"""
 
 print ("*************OUTPUT**************")
 print(output)
