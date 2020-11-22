@@ -28,37 +28,8 @@ def main():
   metrics_keys = metrics[0].keys()
   actuals_keys = actuals[0].keys()
 
-  #df_m = pd.DataFrame(data=metrics)
-  
-  #set up empty dictionary to store the data
-  data_m = {}
-  data_a = {}
-  
-  # Need to figure out how to loop through the json and get all the data
-  # can probably use 
-  # for x, v, in metrics.items():
-  
-  # put the data in the metrics into one dictionary
-  for key in metrics_keys:
-    data_m[key] = list(data[key] for data in metrics)
-  
-  for key in metrics_keys:
-    #we'll get the chart if we have data for it from 2-weeks ago, this might need to be changed later on
-    if data_m[key][len(metrics)-14] != None and key != 'date':
-      print("Plotted... " + key)
-      make_plot(data_m["date"], data_m[key], key + " " + str(date.today()))
-
-  for key in actuals_keys:
-    data_a[key] = list(data[key] for data in actuals)
-  
-  for key in actuals_keys:
-    if data_a[key][len(metrics)-14] != None and key != 'date':
-      #taking out the items with dictionary values
-      #if not isinstance(type(data_a[key][0]), dict):
-      if not isinstance(data_a[key][0], dict): 
-        
-        print("Plotted..." + key)
-        make_plot(data_a["date"], data_a[key], key + " " + str(date.today()))
+  run_data(metrics_keys, metrics)
+  run_data(actuals_keys, actuals)
 
 
 def make_plot(dates, data_name, title):
@@ -75,8 +46,28 @@ def make_plot(dates, data_name, title):
   plt.savefig("chart/" +title + ".png")
   #plt.show()
 
+def run_data(keys, res):
+  #saves the data from response into a dictionary then plot it
+  data = {}
+  for key in keys:
+    data[key] = list(data[key] for data in res)
+  
+  for key in keys:
+    if data[key][len(res)-14] != None and key != 'date':
+      if not isinstance(data[key][0], dict):
+        print("Plotted..." + key)
+        make_plot(data["date"], data[key], key + " " + str(date.today()))
+
+def jprint(obj):
+  text = json.dumps(obj, sort_keys=True, indent=4)
+  print(text)
+
+if __name__ == "__main__":
+  main()
 
   """
+  plt EXAMPLES:
+
   plt.figure(1)
   plt.title("Infection Rate", fontsize=14, fontweight='bold')
   plt.plot(dates, infectionRate)
@@ -92,11 +83,4 @@ def make_plot(dates, data_name, title):
   plt.savefig("2.png")
   plt.show() 
   """
-def jprint(obj):
-  text = json.dumps(obj, sort_keys=True, indent=4)
-  print(text)
-
-if __name__ == "__main__":
-  main()
-
 
