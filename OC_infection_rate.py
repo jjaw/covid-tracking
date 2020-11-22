@@ -20,8 +20,8 @@ def main():
   #This part has all the metrics collected from the API
   metrics = res.json()["metricsTimeseries"]
   metrics_keys = metrics[0].keys()
-  #print(metrics_keys)
-  df_m = pd.DataFrame(data=metrics)
+
+  #df_m = pd.DataFrame(data=metrics)
   
   #set up empty dictionary to store the data
   data = {}
