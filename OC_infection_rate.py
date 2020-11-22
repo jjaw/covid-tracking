@@ -7,7 +7,7 @@ import errno
 from datetime import date
 import pprint
 
-#script to chart different metrics of OC data from CovidActNow
+#script to chart different metrics of OC data from 
 def main():
   apiKey = "0d0c18e9f6894a898708e30eb617ac66"
 
@@ -18,12 +18,12 @@ def main():
   #res_current = requests.get("https://api.covidactnow.org/v2/county/{}.json?apiKey={}".format(fips, apiKey))
 
   #historic data for OC
-  res = requests.get("https://api.covidactnow.org/v2/county/{}.timeseries.json?apiKey={}".format(fips, apiKey))
+  response = requests.get("https://api.covidactnow.org/v2/county/{}.timeseries.json?apiKey={}".format(fips, apiKey))
   #https://api.covidactnow.org/v2/county/06059.timeseries.json?apiKey=0d0c18e9f6894a898708e30eb617ac66
 
   #This part has all the metrics collected from the API
-  metrics = res.json()["metricsTimeseries"]
-  actuals = res.json()["actualsTimeseries"]
+  metrics = response.json()["metricsTimeseries"]
+  actuals = response.json()["actualsTimeseries"]
 
   metrics_keys = metrics[0].keys()
   actuals_keys = actuals[0].keys()
@@ -31,14 +31,14 @@ def main():
   run_data(metrics_keys, metrics)
   run_data(actuals_keys, actuals)
 
-def run_data(keys, data):
+def run_data(keys, res):
   #saves the data from response into a dictionary then plot it
   data = {}
   for key in keys:
-    data[key] = list(data[key] for data in data)
+    data[key] = list(data[key] for data in res)
   
   for key in keys:
-    if data[key][len(data)-14] != None and key != 'date':
+    if data[key][len(res)-14] != None and key != 'date':
       if not isinstance(data[key][0], dict):
         print("Plotted..." + key)
         make_plot(data["date"], data[key], key + " " + str(date.today()))
