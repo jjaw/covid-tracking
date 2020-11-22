@@ -33,6 +33,7 @@ def main():
 
 
 def make_plot(dates, data_name, title):
+  #make the plot title, it, then save it to the chart folder
   plt.figure()
   plt.title(title, fontsize=14, fontweight='bold')
   plt.plot(dates, data_name)
@@ -41,7 +42,7 @@ def make_plot(dates, data_name, title):
     try:
        os.makedirs(os.path.dirname(filename))
     except OSError as ex:
-      if exc.errno != errno.EEXIST:
+      if ex.errno != errno.EEXIST:
         raise
   plt.savefig("chart/" +title + ".png")
   #plt.show()
