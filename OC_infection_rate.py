@@ -2,6 +2,10 @@ import requests
 import json
 import matplotlib.pyplot as plt
 import pandas as pd
+import os
+import errno
+from datetime import date
+import pprint
 
 #script to test OC r naught number with data from CovidActNow
 def main():
@@ -11,7 +15,7 @@ def main():
   fips = "06059"
 
   #current data for OC
-  res_current = requests.get("https://api.covidactnow.org/v2/county/{}.json?apiKey={}".format(fips, apiKey))
+  #res_current = requests.get("https://api.covidactnow.org/v2/county/{}.json?apiKey={}".format(fips, apiKey))
 
   #historic data for OC
   res = requests.get("https://api.covidactnow.org/v2/county/{}.timeseries.json?apiKey={}".format(fips, apiKey))
@@ -19,12 +23,16 @@ def main():
 
   #This part has all the metrics collected from the API
   metrics = res.json()["metricsTimeseries"]
+  actuals = res.json()["actualsTimeseries"]
+
   metrics_keys = metrics[0].keys()
+  actuals_keys = actuals[0].keys()
 
   #df_m = pd.DataFrame(data=metrics)
   
   #set up empty dictionary to store the data
-  data = {}
+  data_m = {}
+  data_a = {}
   
   # Need to figure out how to loop through the json and get all the data
   # can probably use 
@@ -32,21 +40,40 @@ def main():
   
   # put the data in the metrics into one dictionary
   for key in metrics_keys:
-    data[key] = list(data[key] for data in metrics)
+    data_m[key] = list(data[key] for data in metrics)
   
   for key in metrics_keys:
     #we'll get the chart if we have data for it from 2-weeks ago, this might need to be changed later on
-    if data[key][len(metrics)-14] != None and key != 'date':
+    if data_m[key][len(metrics)-14] != None and key != 'date':
       print("Plotted... " + key)
-      make_plot(data["date"], data[key], key)
+      make_plot(data_m["date"], data_m[key], key + " " + str(date.today()))
+
+  for key in actuals_keys:
+    data_a[key] = list(data[key] for data in actuals)
+  
+  for key in actuals_keys:
+    if data_a[key][len(metrics)-14] != None and key != 'date':
+      #taking out the items with dictionary values
+      #if not isinstance(type(data_a[key][0]), dict):
+      if not isinstance(data_a[key][0], dict): 
+        
+        print("Plotted..." + key)
+        make_plot(data_a["date"], data_a[key], key + " " + str(date.today()))
 
 
 def make_plot(dates, data_name, title):
   plt.figure()
   plt.title(title, fontsize=14, fontweight='bold')
   plt.plot(dates, data_name)
-  plt.savefig(title + ".png")
-  plt.show()
+  filename = "chart/" + title + ".png"
+  if not os.path.exists(os.path.dirname(filename)):
+    try:
+       os.makedirs(os.path.dirname(filename))
+    except OSError as ex:
+      if exc.errno != errno.EEXIST:
+        raise
+  plt.savefig("chart/" +title + ".png")
+  #plt.show()
 
 
   """
