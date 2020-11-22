@@ -134,6 +134,7 @@ print(output)
 
 gc = gspread.service_account()
 
+#this is a pesonal sheet for testing
 sh = gc.open("covid-test")
 
 sh.sheet1.insert_rows(output)
