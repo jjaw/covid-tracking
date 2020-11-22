@@ -7,7 +7,7 @@ import errno
 from datetime import date
 import pprint
 
-#script to test OC r naught number with data from CovidActNow
+#script to chart different metrics of OC data from CovidActNow
 def main():
   apiKey = "0d0c18e9f6894a898708e30eb617ac66"
 
