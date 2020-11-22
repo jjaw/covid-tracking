@@ -31,6 +31,17 @@ def main():
   run_data(metrics_keys, metrics)
   run_data(actuals_keys, actuals)
 
+def run_data(keys, res):
+  #saves the data from response into a dictionary then plot it
+  data = {}
+  for key in keys:
+    data[key] = list(data[key] for data in res)
+  
+  for key in keys:
+    if data[key][len(res)-14] != None and key != 'date':
+      if not isinstance(data[key][0], dict):
+        print("Plotted..." + key)
+        make_plot(data["date"], data[key], key + " " + str(date.today()))
 
 def make_plot(dates, data_name, title):
   #make the plot title, it, then save it to the chart folder
@@ -46,18 +57,6 @@ def make_plot(dates, data_name, title):
         raise
   plt.savefig("chart/" +title + ".png")
   #plt.show()
-
-def run_data(keys, res):
-  #saves the data from response into a dictionary then plot it
-  data = {}
-  for key in keys:
-    data[key] = list(data[key] for data in res)
-  
-  for key in keys:
-    if data[key][len(res)-14] != None and key != 'date':
-      if not isinstance(data[key][0], dict):
-        print("Plotted..." + key)
-        make_plot(data["date"], data[key], key + " " + str(date.today()))
 
 def jprint(obj):
   text = json.dumps(obj, sort_keys=True, indent=4)
