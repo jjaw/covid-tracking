@@ -8,6 +8,9 @@ import pprint
 import csv
 import gspread
 import requests
+from urllib3.exceptions import NewConnectionError
+from urllib3.exceptions import MaxRetryError
+from socket import gaierror
 import time
 import os
 import pytesseract #change text to image
@@ -84,10 +87,14 @@ for image in images:
 
 pictures = []
 for i, search_image_url in enumerate(search_image_urls):
-  r = requests.get(search_image_url)
+  try:
+    r = requests.get(search_image_url)
   #time.sleep(5)
-  with open("ca/" + str(i)+".png", "wb") as f:
-    f.write(r.content)
+    with open("ca/" + str(i)+".png", "wb") as f:
+      f.write(r.content)
+  except (gaierror, NewConnectionError, MaxRetryError, ConnectionError) as err:
+    raise ValueError("Didn't load... " + "ca/" + str(i) + ".png")
+  
 
 #create a list to store all the texts recognized from the images
 texts = []
