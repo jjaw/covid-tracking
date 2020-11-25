@@ -85,19 +85,31 @@ for image in images:
 
 #recognize image then print get the test
 
-pictures = []
-for i, search_image_url in enumerate(search_image_urls):
-  try:
-    r = requests.get(search_image_url)
-  #time.sleep(5)
-    with open("ca/" + str(i)+".png", "wb") as f:
-      f.write(r.content)
-  except (gaierror, NewConnectionError, MaxRetryError, ConnectionError) as err:
-    raise ValueError("Didn't load... " + "ca/" + str(i) + ".png")
+def img_to_text(search_image_urls):
   
+  for i, search_image_url in enumerate(search_image_urls):
+    try:
+      r = requests.get(search_image_url)
+      #Create a folder for it if the folder doesn't exist
+      try:
+        with open("ca/" + str(i)+".png", "wb") as f:
+          f.write(r.content)
+      except FileNotFoundError as err:
+        os.makedirs(os.path.dirname("ca/" + str(i)+".png"))
+        print("ca/ is missing... creating directory ca/")
+        img_to_text(search_image_urls)
+
+    except (gaierror, NewConnectionError, MaxRetryError, ConnectionError) as err:
+      raise ValueError("Didn't load... " + "ca/" + str(i) + ".png")
+
+img_to_text(search_image_urls)
+
+
 
 #create a list to store all the texts recognized from the images
 texts = []
+
+
 
 #get the text from image through tesseract
 for x in range(len(search_image_urls)):
@@ -118,6 +130,7 @@ while ("" in texts):
 pprint.pprint(texts)
 
 #record of all the links to a csv file
+
 with open("ca/ca.csv", "w", newline="") as csvfile:
   writer = csv.writer(csvfile)
   writer.writerows(images)
