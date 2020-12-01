@@ -48,14 +48,16 @@ def make_plot(dates, data_name, title):
   plt.figure()
   plt.title(title, fontsize=14, fontweight='bold')
   plt.plot(dates, data_name)
-  filename = "chart/" + title + ".png"
+  #directory is chart/date/
+  directory = "chart/" + str(date.today()) + "/"
+  filename = directory + title + ".png"
   if not os.path.exists(os.path.dirname(filename)):
     try:
        os.makedirs(os.path.dirname(filename))
     except OSError as ex:
       if ex.errno != errno.EEXIST:
         raise
-  plt.savefig("chart/" +title + ".png")
+  plt.savefig(directory + title + ".png")
   #plt.show()
 
 def jprint(obj):
