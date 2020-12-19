@@ -167,3 +167,6 @@ gc = gspread.service_account()
 sh = gc.open("covid-test")
 
 sh.sheet1.insert_rows(output)
+
+#close selenium
+driver.quit()
