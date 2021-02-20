@@ -1,6 +1,8 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 from requests_html import HTMLSession
 from bs4 import BeautifulSoup
@@ -26,6 +28,14 @@ url = "https://www.cdph.ca.gov/Programs/CID/DCDC/Pages/COVID-19/SNFsCOVID_19.asp
 driver.get(url)
 
 #find the tableau table
+timeout = 16
+try:
+  element_present = EC.presence_of_element_located((By.XPATH, "//iframe[@title='Data Visualization']"))
+  #element = driver.find_element_by_xpath("//iframe[@title='Data Visualization']")
+  WebDriverWait(driver, timeout).until(element_present)
+except TimeoutException:
+  print("Timed out waiting for page to load")
+
 element = driver.find_element_by_xpath("//iframe[@title='Data Visualization']")
 
 #url of tableau table
@@ -38,7 +48,7 @@ sess = HTMLSession()
 #test_url = "https://datavisualization.cdph.ca.gov/t/LNC/views/COVIDSNFDASHV3/COVIDSNFDASH?:isGuestRedirectFromVizportal=y&:embed=y"
 
 r = sess.get(new_url)
-r.html.render(timeout=16, sleep=8)
+r.html.render(timeout=32, sleep=8)
 print("tableu_table_status:", r.status_code)
 
 #find all the images
@@ -170,3 +180,5 @@ sh.sheet1.insert_rows(output)
 
 #close selenium
 driver.quit()
+
+
